@@ -305,7 +305,7 @@ setInterval(physicsLoop, 1000 / 30);
 
 const slaveUp = false;
 
-for (let i = 0; i < !slaveUp * 256; i++) {
+for (let i = 0; i < !slaveUp * 1024; i++) {
     const o = new CollidableObject();
     o.x = Math.random() * canvas.width;
     o.y = Math.random() * canvas.height;
