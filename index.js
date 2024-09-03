@@ -135,14 +135,12 @@ class CollidableObject {
      * @param {number} squaredDistance 
      */
     handleElasticCollision(other, dx, dy, squaredDistance) {
-        const restitution = 1; // Coefficient of restitution (1 for perfectly elastic)
-    
-        const distance = Math.sqrt(squaredDistance);
-        if (distance === 0) {
-            // Avoid division by zero; handle overlap
+        let distance = Math.sqrt(squaredDistance);
+        if (distance < Number.EPSILON) {
             const overlapCorrection = this.size + other.size;
-            dx = (Math.random() - 0.5) * overlapCorrection;
-            dy = (Math.random() - 0.5) * overlapCorrection;
+            dx = (Math.random() - .5) * overlapCorrection;
+            dy = (Math.random() - .5) * overlapCorrection;
+            distance = overlapCorrection;
         }
     
         const normal = new Vector2D(dx / distance, dy / distance);
@@ -150,21 +148,18 @@ class CollidableObject {
         const velocityAlongNormal = relativeVelocity.dot(normal);
     
         if (velocityAlongNormal > 0) {
-            return; // Objects are separating, no impulse needed
+            return;
         }
     
-        // Calculate impulse scalar
-        const impulseScalar = -(1 + restitution) * velocityAlongNormal / (1 / this.size + 1 / other.size);
+        const impulseScalar = -2 * velocityAlongNormal / (1 / this.size + 1 / other.size);
         const impulse = new Vector2D(impulseScalar * normal.x, impulseScalar * normal.y);
     
-        // Update velocities based on impulse
         this.velocity.x += (impulse.x / this.size);
         this.velocity.y += (impulse.y / this.size);
         other.velocity.x -= (impulse.x / other.size);
         other.velocity.y -= (impulse.y / other.size);
     
-        // Handle rotational effects
-        const rotationalImpulse = normal.crossProduct(relativeVelocity) * impulseScalar * .01;
+        const rotationalImpulse = normal.crossProduct(relativeVelocity) * impulseScalar * .001;
         this.rotationalVelocity += rotationalImpulse / this.size;
         other.rotationalVelocity -= rotationalImpulse / other.size;
     }
