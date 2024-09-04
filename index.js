@@ -2,11 +2,6 @@ import Polygon from "./lib/Polygon.js";
 import SpatialHashGrid from "./lib/SpatialHashGrid.js";
 import Vector2D from "./lib/Vector2D.js"
 
-function angleDifference(a, b) {
-    const diff = a - b;
-    return Math.atan2(Math.sin(diff), Math.cos(diff));
-}
-
 const grid = new SpatialHashGrid();
 
 class CollidableObject {
